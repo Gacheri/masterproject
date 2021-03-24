@@ -1,0 +1,132 @@
+old navbar
+<?php
+    NavBar::begin([
+        'brandLabel' => Yii::$app->name,
+        'brandUrl' => Yii::$app->homeUrl,
+        // 'options' => [
+        //     'class' => 'navbar-inverse navbar-fixed-top',
+        // ],
+    ]);
+    $menuItems = [
+        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'Contact', 'url' => ['/site/contact']],
+       
+    ];
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    } else {
+        $menuItems[] = '<li>'
+            . Html::beginForm(['/site/logout'], 'post')
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
+    echo Nav::widget([
+        'options' => ['class' => 'navbar-nav navbar-right'],
+        'items' => $menuItems,
+    ]);
+    NavBar::end();
+    ?>
+
+    0ld navbar end
+
+    add rating record to database 
+    // rate.php - the php page where you will insert rating.
+
+$('#rate').raty({
+    click: function(score) {
+    var id = // get the id of the object for which the rating is done
+        $.post('rate.php', {score:score,id:id}, function(data) {
+         // data is a variable that may or may not be 
+             returned from the rate.php page
+
+            });
+
+    }
+});
+
+<?= $form->field($image, 'imagePath')->fileInput() ?>
+
+public function saveImage($productId,$imagedata){
+        
+        $model = new Productimages();
+                
+        if($model->load(["Productimages"=>['imagePath'=>$imagedata['imagePath']]])){
+            //generates images with unique names
+            $imageName = bin2hex(openssl_random_pseudo_bytes(10));
+            $model->imagePath = UploadedFile::getInstance($model, 'imagePath');
+            //saves file in the root directory
+            $model->imagePath->saveAs('uploads/.'.$imageName.'.'.$model->imagePath->extension);
+            //save in the db
+            $model->imagePath='uploads/'.$imageName.'.'.$model->imagePath->extension;
+            $model->productId = $productId;
+            if($model->save()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    modal
+    $('.addbrand').click(function(e){
+            e.preventDefault();
+           $.get('addbrand',function(data){
+                $('#addbrand').modal('show')
+                    .find('#addbrandContent')
+                    .html(data);
+        });
+    });
+
+    <?php  var_dump($kampuni->companyimages); exit(); ?>
+
+    <button class="button searchbtn" onclick="window.location.href='../company/search'">Search</button>
+
+
+    
+                'value' => function($model) {
+
+                    foreach($model->groups as $group) {
+
+                       $groupNames[] = $group->name;
+
+                    }
+
+                    return implode("\n", groupNames);
+
+                },
+
+    <?php $i = 0;
+       foreach ($shoeTotal as $shoe) {
+         if (++$i > 6) break; ?>
+
+
+         <div class="col-md-4" style="float:left">
+         <div class="card mb-3">
+            <img class="card-img-top " src="<?= Yii::$app->request->baseUrl.'/'.$shoe->shoesimages[0]->image ?>" alt="">
+            <a href="<?= Url::to(['shoes/addtocart', 'shoesId'=>$shoe->shoesId])?>" class="btn btn-outline-dark btitle" role="button">Add to Cart</a>
+            <button class="btn btn-outline-dark centered">Quick View</button>
+          </div>
+          <h4 class="card-title"><?= $shoe['shoeName'] ?></h4>
+          <p class="card-text">Ksh<span><?= $shoe['price']?></p>
+        </div>
+
+ public function actionDelete($id)
+    {
+        $query = new Query;
+        $query->select(['companyImages.companyId','companyImages.imageId','companyImages.imagePath'])  
+              ->from('companyImages')
+               ->join('INNER JOIN', 
+                 'Company',
+                    'CompanyImages.companyId = Company.companyId'
+                ); 
+        $command = $query->createCommand();
+        $data = $command->queryAll();
+        // var_dump($data);exit;
+        $this->findModel($id)->delete();
+        return $this->redirect(['index']);
+    }
